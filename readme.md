@@ -9,7 +9,7 @@ This project scrapes tweets from a list of Twitter accounts and counts the menti
 - Configurable time range for scraping (in minutes or a specific date/time).
 - Supports logging into Twitter with email, phone number, and password.
 - Automatic scrolling through tweets to load more content.
-- Browser automation with Puppeteer (stealth mode optional).
+- Browser automation with Puppeteer.
 - Periodic scraping at configurable intervals.
 
 ## Technologies Used
@@ -25,8 +25,8 @@ This project scrapes tweets from a list of Twitter accounts and counts the menti
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/yourusername/twitter-ticker-scraper.git
-   cd twitter-ticker-scraper
+   git clone https://github.com/AliAhmedM48/SearchTweets.git
+   cd SearchTweets
    ```
 
 2. Install the dependencies:
@@ -63,7 +63,7 @@ Modify the config.js file to update the list of Twitter accounts, ticker, scrapi
   ],
   scrapingIntervalMinutes: 10,
   timeAgo: {
-    type: "min", // or "time" for a specific date
+    type: "min", // 'min' or 'time' for a specific date
     min: 50,
     time: "2024-07-01T00:00:00.000Z",
   },
