@@ -3,11 +3,6 @@
 const moment = require("moment");
 
 const puppeteer = require("puppeteer");
-// const puppeteer = require("puppeteer-extra");
-// const StealthPlugin = require("puppeteer-extra-plugin-stealth");
-// puppeteer.use(StealthPlugin());
-// await page.goto("https://bot.sannysoft.com/"); // or networkidle0
-// await page.screencast({ path: "bot.png" });
 
 // VARIABLES
 // -------------------------------
@@ -42,30 +37,12 @@ const loginToTwitter = async (
   password,
   phoneNumber
 ) => {
-  // await page.goto(twitterUrl, { waitUntil: "networkidle2" });
   await page.goto(twitterUrl);
 
   //#region email input & next button
   await page.waitForSelector("input[name='text']", { timeout: 120_000 });
   await page.type("input[name='text']", email, { delay: 100 });
-
-  // Wait for the selector to be present
-  // await page.waitForSelector('button[role="button"]:nth-of-type(2)', {
-  //   timeout: 120_000,
-  // });
-  // await page.waitForFunction(
-  //   () => document.querySelectorAll('button[role="button"]').length > 4
-  // );
-
-  // Interact with the button
   await page.click('button[role="button"]:nth-of-type(2)');
-  // await page.evaluate(() => {
-  //   const button = document.querySelectorAll('button[role="button"]')[3];
-  //   if (button) {
-  //     button.click();
-  //   }
-  // });
-
   //#endregion
 
   //#region phoneNumber input & next button
@@ -97,20 +74,6 @@ const scrapeTweetsOneAccount = async (page, url, ticker, timeAgo) => {
       let lastHeight = await page.evaluate("document.body.scrollHeight");
 
       while (!reachedTimeAgo) {
-        // let previousHeight = await page.evaluate("document.body.scrollHeight");
-        // console.log({ previousHeight });
-
-        // await page.evaluate("window.scrollTo(0, document.body.scrollHeight)");
-        // previousHeight = await page.evaluate("document.body.scrollHeight");
-        // console.log({ previousHeight });
-
-        // await page.waitForFunction(
-        //   `document.body.scrollHeight > ${previousHeight}`
-        // );
-        // await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // console.log({ previousHeight });
-
         let temp = await page.evaluate(() => {
           const tweetElements = Array.from(
             document.querySelectorAll("article")
@@ -124,6 +87,10 @@ const scrapeTweetsOneAccount = async (page, url, ticker, timeAgo) => {
           });
 
           return tweetData;
+        });
+
+        temp.forEach((element) => {
+          console.log(element.tweetTime);
         });
 
         const filteredTweets = temp.filter(
@@ -142,18 +109,10 @@ const scrapeTweetsOneAccount = async (page, url, ticker, timeAgo) => {
 
         const newHeight = await page.evaluate("document.body.scrollHeight");
         if (newHeight === lastHeight) {
-          // console.log("Reached the bottom of the page.");
           break;
         }
 
         lastHeight = newHeight;
-        // console.log({ reachedTimeAgo });
-
-        // if (reachedTimeAgo) {
-        //   break;
-        // }
-
-        // scrollAttempts++;
       }
       //#endregion
     } else {
@@ -172,13 +131,6 @@ const scrapeTweetsOneAccount = async (page, url, ticker, timeAgo) => {
       });
     }
 
-    // tweets.forEach((element) => {
-    //   console.log(element.tweetTime);
-    // });
-
-    // console.log("tweets.length=> ", tweets.length);
-
-    // Count all ticker mentions across all tweets based on time and ticker
     const filteredTweets = tweets.filter(
       (tweet) =>
         tweet.tweetBody.includes(ticker) &&
@@ -212,8 +164,8 @@ const scrapeTweetsOneAccount = async (page, url, ticker, timeAgo) => {
 
     return scrapedData;
   } catch (error) {
-    console.error(`Error scraping ${url}:`, error);
-    return { title: url, counter: 0 };
+    console.error(`Error scraping ${url}:`, error.message);
+    return { accountTitle: url, tickerCounter: 0 };
   }
 };
 //#endregion
@@ -294,7 +246,6 @@ app(
   config.timeAgo,
   config.scrapingIntervalMinutes
 );
-
 setInterval(
   app,
   config.scrapingIntervalMinutes * 60 * 1000,

@@ -20,7 +20,7 @@ module.exports = {
   timeAgo: {
     type: "time", // "min" or "time" for a specific date
     min: 50,
-    time: "2024-07-01T00:00:00.000Z",
+    time: "2024-09-01T00:00:00.000Z",
   },
   openBrowser: true,
   logAccountDetails: true,
